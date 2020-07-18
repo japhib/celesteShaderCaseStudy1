@@ -11,6 +11,7 @@ windowWidth, windowHeight = windowWidth*.9, windowHeight * .9 --make the window 
 push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = false})
 
 local iceblock = nil
+local iceblock2 = nil
 
 local camPos = vector(0, 0)
 local CamMoveSpd = 100
@@ -19,6 +20,8 @@ function love.load()
     local w = 100
     local h = 160
     iceblock = IceBlock:new(gameWidth / 2 - w / 2, gameHeight / 2 - h / 2, w, h)
+
+    iceblock2 = IceBlock:new(gameWidth / 2 + w, gameHeight / 2 - h / 2, w / 3, h / 3)
 end
 
 function love.update(dt)
@@ -35,6 +38,7 @@ function love.update(dt)
     end
 
     iceblock:update(dt)
+    iceblock2:update(dt)
 end
 
 function love.draw()
@@ -43,6 +47,7 @@ function love.draw()
     love.graphics.clear(.2, .2, .2)
 
     iceblock:draw(camPos)
+    iceblock2:draw(camPos)
 
     push:finish()
 end

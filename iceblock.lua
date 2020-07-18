@@ -14,7 +14,9 @@ local frontImg = loadTilingImage('img/front.png')
 
 local backgroundShader = love.graphics.newShader('shaders/background_shader.fs')
 local middleShader = love.graphics.newShader('shaders/middle_shader.fs')
+middleShader:send('resolution', {middleImg:getWidth(), middleImg:getHeight()})
 local frontShader = love.graphics.newShader('shaders/front_shader.fs')
+frontShader:send('resolution', {frontImg:getWidth(), frontImg:getHeight()})
 
 local MiddleParallaxLevel = .75
 
@@ -30,21 +32,16 @@ function IceBlock:initialize(x, y, w, h)
         w / backgroundImg:getWidth(),
         h / backgroundImg:getHeight()
     )
-    backgroundShader:send('tiling', {self.backgroundImgScaling.x, self.backgroundImgScaling.y})
 
     self.middleImgScaling = vector(
         w / middleImg:getWidth(),
         h / middleImg:getHeight()
     )
-    middleShader:send('resolution', {middleImg:getWidth(), middleImg:getHeight()})
-    middleShader:send('tiling', {self.middleImgScaling.x, self.middleImgScaling.y})
 
     self.frontImgScaling = vector(
         w / frontImg:getWidth(),
         h / frontImg:getHeight()
     )
-    frontShader:send('resolution', {frontImg:getWidth(), frontImg:getHeight()})
-    frontShader:send('tiling', {self.frontImgScaling.x, self.frontImgScaling.y})
 end
 
 function IceBlock:update(dt)
@@ -53,11 +50,13 @@ end
 
 function IceBlock:draw(camPos)
     love.graphics.setShader(backgroundShader)
+    backgroundShader:send('tiling', {self.backgroundImgScaling.x, self.backgroundImgScaling.y})
     backgroundShader:send('offset', {camPos.x / gameWidth, camPos.y / gameHeight})
     love.graphics.draw(backgroundImg, camPos.x + self.pos.x, camPos.y + self.pos.y, 0, self.backgroundImgScaling.x, self.backgroundImgScaling.y)
 
-    love.graphics.setColor(1, 1, 1)
     love.graphics.setShader(middleShader)
+
+    middleShader:send('tiling', {self.middleImgScaling.x, self.middleImgScaling.y})
     middleShader:send('offset', {camPos.x / gameWidth * MiddleParallaxLevel, camPos.y / gameHeight * MiddleParallaxLevel})
     middleShader:send('time', self.timeElapsed)
     love.graphics.draw(middleImg, camPos.x + self.pos.x, camPos.y + self.pos.y, 0, self.middleImgScaling.x, self.middleImgScaling.y)
@@ -68,6 +67,8 @@ function IceBlock:draw(camPos)
     love.graphics.draw(middleImg, camPos.x + self.pos.x, camPos.y + self.pos.y, 0, self.middleImgScaling.x, self.middleImgScaling.y)
 
     love.graphics.setShader(frontShader)
+    frontShader:send('tiling', {self.frontImgScaling.x, self.frontImgScaling.y})
+
     frontShader:send('offset', {0, 0})
     frontShader:send('time', self.timeElapsed)
     love.graphics.draw(frontImg, camPos.x + self.pos.x, camPos.y + self.pos.y, 0, self.frontImgScaling.x, self.frontImgScaling.y)
