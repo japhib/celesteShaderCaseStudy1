@@ -5,7 +5,7 @@ uniform float time;
 
 vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords)
 {
-    float scaledTime = time * 3.14;
+    float scaledTime = time * 3.14 * 2;
     float timestep1 = step(-.7, sin(scaledTime));
     float timestep2 = step(.7, sin(scaledTime));
 
